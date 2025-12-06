@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orquestación de Flujo con Node-RED y N8N</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .student-info {
+            text-align: left;
+        }
+        
+        .materia {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .indice {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .indice h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .indice ul {
+            padding-left: 20px;
+        }
+        
+        .indice li {
+            margin-bottom: 8px;
+        }
+        
+        .indice a {
+            text-decoration: none;
+            color: #3498db;
+        }
+        
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        
+        section {
+            background-color: #fff;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        
+        .volver-indice {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .volver-indice a {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .volver-indice a:hover {
+            background-color: #2980b9;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            border-radius: 0 5px 5px 0;
+            overflow-x: auto;
+        }
+        
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background-color: #f2f2f2;
+            color: #2c3e50;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .diagram {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .diagram-box {
+            display: inline-block;
+            padding: 15px;
+            margin: 10px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            min-width: 100px;
+        }
+        
+        .arrow {
+            font-size: 24px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="student-info">
+            <p><strong>Jonathan Blanco</strong></p>
+            <p>Cédula: 30483682</p>
+        </div>
+    </div>
+    
+    <div class="materia">Teleprocesos</div>
+    <h1>Orquestación de Flujo con Node-RED y N8N</h1>
+    
+    <div class="indice">
+        <h2>Índice</h2>
+        <ul>
+            <li><a href="#introduccion">1. Introducción a la Orquestación de Flujos</a></li>
+            <li><a href="#node-red">2. Node-RED: Automatización Visual</a></li>
+            <li><a href="#n8n">3. N8N: Plataforma de Automatización</a></li>
+            <li><a href="#comparacion">4. Comparación Node-RED vs N8N</a></li>
+            <li><a href="#casos-uso">5. Casos de Uso en IA</a></li>
+            <li><a href="#implementacion">6. Implementación Práctica</a></li>
+            <li><a href="#conclusion">7. Conclusión</a></li>
+        </ul>
+    </div>
+    
+    <section id="introduccion">
+        <h2>1. Introducción a la Orquestación de Flujos</h2>
+        <p>La orquestación de flujos de trabajo es una metodología fundamental en el desarrollo de sistemas de inteligencia artificial modernos. Consiste en la automatización y coordinación de múltiples procesos, servicios y tareas para crear flujos de trabajo complejos y eficientes.</p>
+        
+        <p><strong>Características principales:</strong></p>
+        <ul>
+            <li><strong>Automatización:</strong> Reducción de intervención manual en procesos repetitivos</li>
+            <li><strong>Integración:</strong> Conexión entre diferentes sistemas y APIs</li>
+            <li><strong>Monitoreo:</strong> Seguimiento en tiempo real del estado de los flujos</li>
+            <li><strong>Escalabilidad:</strong> Capacidad de manejar volúmenes crecientes de datos</li>
+            <li><strong>Mantenibilidad:</strong> Fácil modificación y actualización de flujos</li>
+        </ul>
+        
+        <div class="note">
+            <strong>Importancia en IA:</strong> Los flujos de orquestación son esenciales para pipelines de machine learning, procesamiento de datos en tiempo real, y sistemas de inferencia distribuidos.
+        </div>
+    </section>
+    
+    <section id="node-red">
+        <h2>2. Node-RED: Automatización Visual</h2>
+        
+        <h3>¿Qué es Node-RED?</h3>
+        <p>Node-RED es una herramienta de programación visual desarrollada por IBM para conectar dispositivos de hardware, APIs y servicios en línea. Se basa en Node.js y utiliza un enfoque de flujo de nodos para crear aplicaciones.</p>
+        
+        <h3>Características principales:</h3>
+        <div class="code-block">
+            // Ejemplo de configuración básica de Node-RED
+            // Instalación global
+            npm install -g --unsafe-perm node-red
+            
+            // Iniciar Node-RED
+            node-red
+            
+            // Acceder a la interfaz
+            // http://localhost:1880
+        </div>
+        
+        <h3>Componentes principales:</h3>
+        <ul>
+            <li><strong>Nodos (Nodes):</strong> Bloques de funcionalidad predefinidos</li>
+            <li><strong>Flujos (Flows):</strong> Secuencias de nodos conectados</li>
+            <li><strong>Paleta:</strong> Biblioteca de nodos disponibles</li>
+            <li><strong>Dashboard:</strong> Interfaz visual para monitoreo</li>
+        </ul>
+        
+        <div class="diagram">
+            <div class="diagram-box">API Input</div>
+            <span class="arrow">→</span>
+            <div class="diagram-box">Procesamiento</div>
+            <span class="arrow">→</span>
+            <div class="diagram-box">Base de Datos</div>
+            <span class="arrow">→</span>
+            <div class="diagram-box">Notificación</div>
+        </div>
+        
+        <h3>Ventajas para IA:</h3>
+        <ul>
+            <li>Integración sencilla con modelos de machine learning</li>
+            <li>Procesamiento en tiempo real de flujos de datos</li>
+            <li>Extensible mediante módulos personalizados</li>
+            <li>Comunidad activa y amplia biblioteca de nodos</li>
+        </ul>
+    </section>
+    
+    <section id="n8n">
+        <h2>3. N8N: Plataforma de Automatización</h2>
+        
+        <h3>Introducción a N8N</h3>
+        <p>N8N es una plataforma de automatización de flujos de trabajo de código abierto que permite conectar diferentes aplicaciones, servicios y APIs. Su nombre proviene de "nodemation" (automatización de nodos).</p>
+        
+        <h3>Instalación y configuración:</h3>
+        <div class="code-block">
+            // Método 1: Usando npm
+            npm install n8n -g
+            n8n start
+            
+            // Método 2: Usando Docker
+            docker run -it --rm \
+              --name n8n \
+              -p 5678:5678 \
+              -v ~/.n8n:/home/node/.n8n \
+              n8nio/n8n
+            
+            // Método 3: npx
+            npx n8n
+        </div>
+        
+        <h3>Características destacadas:</h3>
+        <ul>
+            <li><strong>Workflows visuales:</strong> Interfaz drag-and-drop</li>
+            <li><strong>Self-hosted:</strong> Control completo sobre datos y configuración</li>
+            <li><strong>300+ integraciones:</strong> Conexiones predefinidas</li>
+            <li><strong>Expresiones:</strong> Lógica avanzada con JavaScript</li>
+            <li><strong>Webhooks:</strong> Trigger desde aplicaciones externas</li>
+        </ul>
+        
+        <h3>Arquitectura típica:</h3>
+        <div class="code-block">
+            Trigger → Procesamiento → Acción → Resultado
+            (Webhook)   (Datos)     (API)    (Base de datos)
+        </div>
+    </section>
+    
+    <section id="comparacion">
+        <h2>4. Comparación Node-RED vs N8N</h2>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Característica</th>
+                    <th>Node-RED</th>
+                    <th>N8N</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Enfoque principal</strong></td>
+                    <td>IoT y automatización de dispositivos</td>
+                    <td>Automatización de procesos empresariales</td>
+                </tr>
+                <tr>
+                    <td><strong>Interfaz</strong></td>
+                    <td>Editor de flujos basado en navegador</td>
+                    <td>Workflow editor más moderno</td>
+                </tr>
+                <tr>
+                    <td><strong>Modelo de despliegue</strong></td>
+                    <td>Principalmente self-hosted</td>
+                    <td>Self-hosted y cloud</td>
+                </tr>
+                <tr>
+                    <td><strong>Integraciones nativas</strong></td>
+                    <td>~2,000 nodos en la paleta</td>
+                    <td>~300+ integraciones predefinidas</td>
+                </tr>
+                <tr>
+                    <td><strong>Complejidad de flujos</strong></td>
+                    <td>Moderada, ideal para IoT</td>
+                    <td>Alta, para procesos empresariales complejos</td>
+                </tr>
+                <tr>
+                    <td><strong>Comunidad</strong></td>
+                    <td>Muy activa, respaldada por IBM</td>
+                    <td>Creciendo rápidamente</td>
+                </tr>
+                <tr>
+                    <td><strong>Mejor para IA</strong></td>
+                    <td>Procesamiento en tiempo real</td>
+                    <td>Orquestación de pipelines ML</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="note">
+            <strong>Recomendación:</strong> Node-RED es ideal para proyectos IoT y sistemas embebidos con IA, mientras que N8N es superior para orquestación de procesos empresariales complejos y automatización de pipelines de datos.
+        </div>
+    </section>
+    
+    <section id="casos-uso">
+        <h2>5. Casos de Uso en Inteligencia Artificial</h2>
+        
+        <h3>Pipeline de Procesamiento de Imágenes</h3>
+        <p>Flujo para procesamiento y análisis de imágenes usando modelos de visión por computadora:</p>
+        <div class="code-block">
+            [Webhook] → [Descarga Imagen] → [Pre-procesamiento] → 
+            [Modelo IA (TensorFlow)] → [Análisis Resultados] → 
+            [Almacenamiento Cloud] → [Notificación Email]
+        </div>
+        
+        <h3>Sistema de Recomendaciones en Tiempo Real</h3>
+        <p>Orquestación de recomendaciones personalizadas basadas en comportamiento de usuario:</p>
+        <ul>
+            <li><strong>Trigger:</strong> Evento de usuario en aplicación web</li>
+            <li><strong>Procesamiento:</strong> Obtención de datos históricos</li>
+            <li><strong>Modelo IA:</strong> Inferencia con modelo pre-entrenado</li>
+            <li><strong>Resultado:</strong> Entrega de recomendación personalizada</li>
+        </ul>
+        
+        <h3>Monitoreo de Modelos en Producción</h3>
+        <p>Flujo para monitorear performance y drift de modelos:</p>
+        <div class="diagram">
+            <div class="diagram-box">Datos Entrada</div>
+            <span class="arrow">→</span>
+            <div class="diagram-box">Inferencia</div>
+            <span class="arrow">→</span>
+            <div class="diagram-box">Análisis</div>
+            <span class="arrow">→</span>
+            <div class="diagram-box">Alerta Drift</div>
+        </div>
+    </section>
+    
+    <section id="implementacion">
+        <h2>6. Implementación Práctica</h2>
+        
+        <h3>Ejemplo: Sistema de Clasificación de Texto</h3>
+        <p>Implementación de un flujo que clasifica sentimientos en comentarios:</p>
+        
+        <div class="code-block">
+            // Estructura del workflow en N8N
+            1. Webhook recibe comentario de usuario
+            2. Limpieza y preprocesamiento de texto
+            3. Envío a servicio Python (Flask/FastAPI)
+            4. Modelo BERT clasifica sentimiento
+            5. Resultado almacenado en PostgreSQL
+            6. Notificación Slack si es negativo
+            7. Dashboard actualizado en tiempo real
+        </div>
+        
+        <h3>Configuración de nodos para IA:</h3>
+        <div class="code-block">
+            // Nodo personalizado para integración con Python
+            {
+              "name": "ML-Predict",
+              "type": "http-request",
+              "properties": {
+                "method": "POST",
+                "url": "http://localhost:5000/predict",
+                "authentication": "none",
+                "body": {
+                  "text": "={{$node[\"Input\"].json[\"comment\"]}}"
+                }
+              }
+            }
+        </div>
+        
+        <h3>Mejores prácticas:</h3>
+        <ul>
+            <li>Implementar manejo de errores en cada nodo</li>
+            <li>Usar variables de entorno para credenciales</li>
+            <li>Implementar logging y monitoreo</li>
+            <li>Crear flujos modulares y reutilizables</li>
+            <li>Versionar workflows usando Git</li>
+        </ul>
+    </section>
+    
+    <section id="conclusion">
+        <h2>7. Conclusión</h2>
+        <p>La orquestación de flujos con Node-RED y N8N representa un paradigma poderoso para el desarrollo de sistemas de inteligencia artificial modernos. Estas herramientas permiten:</p>
+        
+        <ul>
+            <li><strong>Acelerar el desarrollo:</strong> Reducción significativa del tiempo de implementación</li>
+            <li><strong>Mejorar mantenibilidad:</strong> Flujos visuales fáciles de entender y modificar</li>
+            <li><strong>Facilitar integraciones:</strong> Conexión sencilla entre sistemas heterogéneos</li>
+            <li><strong>Escalar operaciones:</strong> Manejo eficiente de volúmenes crecientes</li>
+        </ul>
+        
+        <p>La elección entre Node-RED y N8N depende de los requisitos específicos del proyecto. Para aplicaciones IoT y sistemas embebidos con IA, Node-RED ofrece ventajas significativas. Para orquestación de procesos empresariales complejos y pipelines de machine learning, N8N proporciona capacidades más robustas.</p>
+        
+        <div class="note">
+            <strong>Futuro de la orquestación:</strong> La evolución hacia sistemas low-code/no-code continuará democratizando el acceso a tecnologías de IA, permitiendo que más profesionales puedan implementar soluciones inteligentes sin necesidad de profundo conocimiento técnico en programación.
+        </div>
+    </section>
+    
+    <div class="volver-indice">
+        <a href="#">Volver al Índice</a>
+    </div>
+    
+    <footer>
+        <p>Informe sobre Orquestación de Flujo con Node-RED y N8N - Jonathan Blanco</p>
+        <p>Teleprocesos - Todos los derechos reservados © 2024</p>
+    </footer>
+</body>
+</html>
